@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio - Lennwoodfirms Design & Construction</title>
+<style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    :root {
+        --primary-color:#139aad;
+        --primary-dark:#0e7d8c;
+        --accent-color:#f7941d;
+        --accent-dark:#e07f0f;
+        --dark:#0d1b1e;
+        --light:#f4f9fa;
+        --white:#ffffff;
+        --gray:#6c757d;
+        --shadow:0 4px 6px rgba(0,0,0,0.1);
+        --shadow-lg:0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    body{
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background:var(--light);
+        color:var(--dark);
+    }
+
+    .container{ max-width:1200px; margin:0 auto; padding:0 20px; }
+
+    /* NAV */
+    .navbar{
+        background:var(--white);
+        box-shadow:var(--shadow);
+        position:sticky;
+        top:0;
+        z-index:100;
+    }
+    .nav-container{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:12px 20px;
+    }
+    .logo{ display:flex; align-items:center; gap:10px; text-decoration:none; }
+    .logo img{ height:50px; }
+    .back-link{
+        color:var(--primary-color);
+        text-decoration:none;
+        font-weight:600;
+        padding:10px 22px;
+        border:2px solid var(--primary-color);
+        border-radius:25px;
+        transition:.3s;
+    }
+    .back-link:hover{ background:var(--primary-color); color:var(--white); }
+
+    /* HERO */
+    .page-hero{
+        background:linear-gradient(135deg, rgba(13,27,30,0.85), rgba(19,154,173,0.82)), url('portfolio-images/road_02.jpeg');
+        background-size:cover;
+        background-position:center;
+        padding:90px 0 70px;
+        text-align:center;
+        color:var(--white);
+    }
+    .page-hero span{
+        display:inline-block;
+        background:rgba(247,148,29,0.18);
+        border:1px solid var(--accent-color);
+        color:var(--accent-color);
+        padding:6px 18px;
+        border-radius:20px;
+        font-size:13px;
+        font-weight:700;
+        letter-spacing:1px;
+        text-transform:uppercase;
+        margin-bottom:18px;
+    }
+    .page-hero h1{ font-size:44px; margin-bottom:12px; }
+    .page-hero p{ font-size:18px; max-width:650px; margin:0 auto; opacity:.95; }
+
+    /* FILTER TABS */
+    .filters{
+        display:flex;
+        justify-content:center;
+        flex-wrap:wrap;
+        gap:12px;
+        padding:40px 20px 10px;
+    }
+    .filter-btn{
+        background:var(--white);
+        border:2px solid var(--primary-color);
+        color:var(--primary-color);
+        padding:10px 24px;
+        border-radius:25px;
+        font-weight:600;
+        cursor:pointer;
+        transition:.3s;
+        font-size:14px;
+    }
+    .filter-btn:hover, .filter-btn.active{
+        background:var(--primary-color);
+        color:var(--white);
+    }
+
+    /* GALLERY */
+    .gallery-section{ padding:30px 0 90px; }
+    .category-block{ margin-bottom:60px; }
+    .category-title{
+        display:flex;
+        align-items:center;
+        gap:14px;
+        margin-bottom:25px;
+    }
+    .category-title .bar{
+        width:6px;
+        height:32px;
+        background:var(--accent-color);
+        border-radius:3px;
+    }
+    .category-title h2{
+        font-size:28px;
+        color:var(--primary-dark);
+    }
+    .category-title p{
+        color:var(--gray);
+        font-size:14px;
+        margin-left:auto;
+    }
+
+    .grid{
+        display:grid;
+        grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+        gap:22px;
+    }
+
+    .card{
+        position:relative;
+        border-radius:14px;
+        overflow:hidden;
+        box-shadow:var(--shadow);
+        height:230px;
+        cursor:pointer;
+        transition:.3s;
+    }
+    .card:hover{ box-shadow:var(--shadow-lg); transform:translateY(-6px); }
+    .card img{
+        width:100%;
+        height:100%;
+        object-fit:cover;
+        transition:transform .5s;
+        display:block;
+    }
+    .card:hover img{ transform:scale(1.1); }
+    .card-overlay{
+        position:absolute;
+        left:0; right:0; bottom:0;
+        background:linear-gradient(to top, rgba(13,27,30,0.92), transparent);
+        color:var(--white);
+        padding:16px;
+        font-weight:600;
+        font-size:15px;
+    }
+
+    /* LIGHTBOX */
+    .lightbox{
+        display:none;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,0.9);
+        z-index:1000;
+        align-items:center;
+        justify-content:center;
+        padding:20px;
+    }
+    .lightbox.active{ display:flex; }
+    .lightbox img{
+        max-width:90vw;
+        max-height:85vh;
+        border-radius:8px;
+        box-shadow:0 0 60px rgba(0,0,0,0.5);
+    }
+    .lightbox-close{
+        position:absolute;
+        top:20px; right:30px;
+        color:var(--white);
+        font-size:36px;
+        cursor:pointer;
+        background:none;
+        border:none;
+    }
+    .lightbox-caption{
+        position:absolute;
+        bottom:30px;
+        color:var(--white);
+        font-size:16px;
+        text-align:center;
+        width:100%;
+    }
+
+    /* CTA */
+    .cta-section{
+        background:linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+        color:var(--white);
+        text-align:center;
+        padding:70px 20px;
+    }
+    .cta-section h2{ font-size:32px; margin-bottom:16px; }
+    .cta-section p{ font-size:17px; opacity:.9; margin-bottom:30px; }
+    .cta-btn{
+        background:var(--accent-color);
+        color:var(--white);
+        padding:15px 40px;
+        border-radius:30px;
+        text-decoration:none;
+        font-weight:600;
+        display:inline-block;
+        transition:.3s;
+    }
+    .cta-btn:hover{ background:var(--accent-dark); transform:translateY(-3px); }
+
+    footer{
+        background:var(--dark);
+        color:var(--light);
+        text-align:center;
+        padding:25px;
+        font-size:14px;
+        opacity:.8;
+    }
+
+    @media (max-width:600px){
+        .page-hero h1{ font-size:30px; }
+        .category-title{ flex-wrap:wrap; }
+        .category-title p{ margin-left:0; width:100%; }
+    }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container container">
+        <a href="index.html" class="logo">
+            <img src="Lennlogo.jpeg" alt="Lennwoodfirms logo">
+        </a>
+        <a href="index.html" class="back-link">&larr; Back to Home</a>
+    </div>
+</nav>
+
+<section class="page-hero">
+    <div class="container">
+        <span>Our Work</span>
+        <h1>Project Portfolio</h1>
+        <p>Real projects delivered by Lennwoodfirms Design & Construction Company Limited — from road works and water systems to full building construction and architectural design.</p>
+    </div>
+</section>
+
+<div class="filters">
+    <button class="filter-btn active" data-filter="all">All Projects</button>
+    <button class="filter-btn" data-filter="road">Road Works</button>
+    <button class="filter-btn" data-filter="water">Water Works</button>
+    <button class="filter-btn" data-filter="build">Building Construction</button>
+    <button class="filter-btn" data-filter="wall">Perimeter Walls</button>
+    <button class="filter-btn" data-filter="design">Architectural Designs</button>
+</div>
+
+<section class="gallery-section">
+    <div class="container">
+
+        <!-- ROAD WORKS -->
+        <div class="category-block" data-category="road">
+            <div class="category-title">
+                <div class="bar"></div>
+                <h2>Road Works</h2>
+                <p>New roads • Tarmacking • Grading • Gravelling • Murraming</p>
+            </div>
+            <div class="grid">
+                <div class="card" onclick="openLightbox('portfolio-images/road_01.jpeg','New road construction through farmland')">
+                    <img src="portfolio-images/road_01.jpeg" alt="New road construction" loading="lazy">
+                    <div class="card-overlay">New Road Construction</div>
+                </div>
+                <div class="card" onclick="openLightbox('portfolio-images/road_02.jpeg','Completed tarmac road')">
+                    <img src="portfolio-images/road_02.jpeg" alt="Tarmacked road" loading="lazy">
+                    <div class="card-overlay">Completed Tarmac Road</div>
+                </div>
+                <div class="card" onclick="openLightbox('portfolio-images/road_03.jpeg','Gravel and murram road base')">
+                    <img src="portfolio-images/road_03.jpeg" alt="Gravel road works" loading="lazy">
+                    <div class="card-overlay">Gravelling & Murraming</div>
+                </div>
+                <div class="card" onclick="openLightbox('portfolio-images/road_04.jpeg','Grader levelling murram road')">
+                    <img src="portfolio-images/road_04.jpeg" alt="Road grading" loading="lazy">
+                    <div class="card-overlay">Road Grading</div>
+                </div>
+                <!-- <div class="card" onclick="openLightbox('portfolio-images/road_06.jpeg','Excavators building new road embankment')">
+                    <img src="portfolio-images/road_06.jpeg" alt="Road embankment works" loading="lazy">
+                    <div class="card-overlay">New Road Formation</div>
+                </div>-->
+                <div class="card" onclick="openLightbox('portfolio-images/road_05.jpeg','Compacting road surface with roller')">
+                    <img src="portfolio-images/road_05.jpeg" alt="Road compaction" loading="lazy">
+                    <div class="card-overlay">Road Compaction</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WATER WORKS -->
+        <div class="category-block" data-category="water">
+            <div class="category-title">
+                <div class="bar"></div>
+                <h2>Water Works</h2>
+                <p>Borehole drilling • Reticulation • Drainage systems</p>
+            </div>
+            <div class="grid">
+                <div class="card" onclick="openLightbox('portfolio-images/water_01.jpeg','HDPE pipes ready for reticulation installation')">
+                    <img src="portfolio-images/water_01.jpeg" alt="HDPE pipes" loading="lazy">
+                    <div class="card-overlay">Borehole Reticulation Pipes</div>
+                </div>
+                <div class="card" onclick="openLightbox('portfolio-images/water_02.jpeg','Pipeline installation trench works')">
+                    <img src="portfolio-images/water_02.jpeg" alt="Pipeline trench installation" loading="lazy">
+                    <div class="card-overlay">Pipeline Installation</div>
+                </div>
+                <div class="card" onclick="openLightbox('portfolio-images/water_03.jpeg','Concrete drainage channel construction')">
+                    <img src="portfolio-images/water_03.jpeg" alt="Drainage channel" loading="lazy">
+                    <div class="card-overlay">Drainage Channel Works</div>
+                </div>
+                <div class="card" onclick="openLightbox('portfolio-images/water_04.jpeg','Culvert and drainage system installation')">
+                    <img src="portfolio-images/water_04.jpeg" alt="Culvert installation" loading="lazy">
+                    <div class="card-overlay">Culvert Installation</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BUILDING CONSTRUCTION -->
+        <div class="category-block" data-category="build">
+            <div class="category-title">
+                <div class="bar"></div>
+                <h2>Building Construction</h2>
+                <p>Foundations • Slabs • Walling • Finishing</p>
+            </div>
+            <div class="grid">
+		    <div class="card" onclick="openLightbox('portfolio-images/build_09.jpeg','Complete modern bungalow')">
+                    <img src="portfolio-images/build_09.jpeg" alt="Complete modern bungalow" loading="lazy">
+                    <div class="card-overlay">Complete Modern Bungalow</div>
+                </div>
+		<div class="card" onclick="openLightbox('portfolio-images/build_07.jpeg','Modern bungalow under construction')">
+                    <img src="portfolio-images/build_07.jpeg" alt="Modern bungalow under construction" loading="lazy">
+                    <div class="card-overlay">Modern Bungalow under construction</div>
+                </div>
+
+                <div class="card" onclick="openLightbox('portfolio-images/build_01.jpeg','Concrete column and formwork construction')">
+                    <img src="portfolio-images/build_01.jpeg" alt="Column formwork" loading="lazy">
+                    <div class="card-overlay">Formwork & Columns</div>
+                </div>
+                <div class="card" onclick="openLightbox('portfolio-images/build_02.jpeg','Slab casting with reinforcement')">
+                    <img src="portfolio-images/build_02.jpeg" alt="Slab casting" loading="lazy">
+                    <div class="card-overlay">Slab Casting</div>
+                </div>
+                <div class="card" onclick="openLightbox('portfolio-images/build_04.jpeg','Lennwoodfirms site staff at work')">
+                    <img src="portfolio-images/build_04.jpeg" alt="Lennwoodfirms site team" loading="lazy">
+                    <div class="card-overlay">Our Team On Site</div>
+                </div>
+                <div class="card" onclick="openLightbox('portfolio-images/build_05.jpeg','Block walling under construction')">
+                    <img src="portfolio-images/build_05.jpeg" alt="Block walling" loading="lazy">
+                    <div class="card-overlay">Block Walling</div>
+                </div>
+                <div class="card" onclick="openLightbox('portfolio-images/build_06.jpeg','Foundation and finishing works')">
+                    <img src="portfolio-images/build_06.jpeg" alt="Finishing works" loading="lazy">
+                    <div class="card-overlay">Foundation Works</div>
+                </div>
+                <div class="card" onclick="openLightbox('portfolio-images/build_03.jpeg','Window and glazing installation')">
+                    <img src="portfolio-images/build_03.jpeg" alt="Window installation" loading="lazy">
+                    <div class="card-overlay">Window Installation</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PERIMETER WALLS -->
+        <div class="category-block" data-category="wall">
+            <div class="category-title">
+                <div class="bar"></div>
+                <h2>Perimeter Walls & Fencing</h2>
+                <p>Perimeter walls • Electric fence installation</p>
+            </div>
+            <div class="grid">
+                <div class="card" onclick="openLightbox('portfolio-images/wall_01.jpeg','Perimeter wall with razor wire and electric fence')">
+                    <img src="portfolio-images/wall_01.jpeg" alt="Perimeter wall with electric fence" loading="lazy">
+                    <div class="card-overlay">Perimeter Wall & Electric Fence</div>
+                </div>
+                <div class="card" onclick="openLightbox('portfolio-images/wall_02.jpeg','Interlocking block perimeter wall')">
+                    <img src="portfolio-images/wall_02.jpeg" alt="Interlocking block wall" loading="lazy">
+                    <div class="card-overlay">Interlocking Block Wall</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ARCHITECTURAL DESIGNS -->
+        <div class="category-block" data-category="design">
+            <div class="category-title">
+                <div class="bar"></div>
+                <h2>Architectural Designs</h2>
+                <p>Residential • Commercial • Institutional concepts</p>
+            </div>
+            <div class="grid">
+                <div class="card" onclick="openLightbox('portfolio-images/design_01.jpeg','Multi-storey apartment building design')">
+                    <img src="portfolio-images/design_01.jpeg" alt="Apartment building design" loading="lazy">
+                    <div class="card-overlay">Apartment Building Concept</div>
+                </div>
+                <div class="card" onclick="openLightbox('portfolio-images/design_02.jpeg','Stone bungalow design with pool')">
+                    <img src="portfolio-images/design_02.jpeg" alt="Stone bungalow with pool" loading="lazy">
+                    <div class="card-overlay">Luxury Bungalow Design</div>
+                </div>
+                <div class="card" onclick="openLightbox('portfolio-images/design_03.jpeg','Modern bungalow with red roof')">
+                    <img src="portfolio-images/design_03.jpeg" alt="Bungalow design red roof" loading="lazy">
+                    <div class="card-overlay">Modern Bungalow</div>
+                </div>
+                <div class="card" onclick="openLightbox('portfolio-images/design_04.jpeg','Aerial view rooftop design')">
+                    <img src="portfolio-images/design_04.jpeg" alt="Aerial rooftop design" loading="lazy">
+                    <div class="card-overlay">Rooftop Design Concept</div>
+                </div>
+                <div class="card" onclick="openLightbox('portfolio-images/design_05.jpeg','Institutional building design')">
+                    <img src="portfolio-images/design_05.jpeg" alt="Institutional building design" loading="lazy">
+                    <div class="card-overlay">Institutional Building</div>
+                </div>
+                <div class="card" onclick="openLightbox('portfolio-images/design_06.jpeg','Roof design aerial concept')">
+                    <img src="portfolio-images/design_06.jpeg" alt="Roof design concept" loading="lazy">
+                    <div class="card-overlay">Roof Design Concept</div>
+                </div>
+                <div class="card" onclick="openLightbox('portfolio-images/design_07.jpeg','Modern bungalow with driveway')">
+                    <img src="portfolio-images/design_07.jpeg" alt="Modern bungalow driveway" loading="lazy">
+                    <div class="card-overlay">Contemporary Home Design</div>
+                </div>
+                <div class="card" onclick="openLightbox('portfolio-images/design_08.jpeg','Two storey family home design')">
+                    <img src="portfolio-images/design_08.jpeg" alt="Two storey house design" loading="lazy">
+                    <div class="card-overlay">Two-Storey Family Home</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="cta-section">
+    <h2>Have a Project in Mind?</h2>
+    <p>Let's discuss your road, water, building, or design project today.</p>
+    <a href="index.html#contact" class="cta-btn">Get a Free Quote</a>
+</section>
+
+<footer>
+    &copy; 2026 Lennwood Firms Design and Construction Company Limited. All rights reserved.<br>
+    P.O. Box 1495, Kitui | +254 791 631 606 | lennwoodfirms606@gmail.com
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+    <img id="lightbox-img" src="" alt="">
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+</div>
+
+<script>
+function openLightbox(src, caption){
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox-caption').textContent = caption;
+    document.getElementById('lightbox').classList.add('active');
+}
+function closeLightbox(){
+    document.getElementById('lightbox').classList.remove('active');
+}
+document.getElementById('lightbox').addEventListener('click', function(e){
+    if(e.target === this) closeLightbox();
+});
+
+// Filtering
+const buttons = document.querySelectorAll('.filter-btn');
+const blocks = document.querySelectorAll('.category-block');
+
+buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        blocks.forEach(block => {
+            if(filter === 'all' || block.dataset.category === filter){
+                block.style.display = 'block';
+            } else {
+                block.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+
+</body>
+</html>
